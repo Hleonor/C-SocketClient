@@ -19,61 +19,18 @@ int Client_Socket::connect_to_server(string ip_addr, int port)
     client_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (client_sock == INVALID_SOCKET)
     {
-        cout << "å®¢æˆ·ç«¯åˆ›å»ºå¥—æŽ¥å­—å¤±è´¥." << endl;
+        cout << "¿Í»§¶Ë´´½¨Ì×½Ó×ÖÊ§°Ü." << endl;
         return -1;
     }
     int err = connect(client_sock, (struct sockaddr *) &client_addr, sizeof(client_addr));
     if (err == SOCKET_ERROR)
     {
-        cout << "å®¢æˆ·ç«¯è¿žæŽ¥å¤±è´¥." << endl;
+        cout << "¿Í»§¶ËÁ¬½ÓÊ§°Ü." << endl;
         return -1;
     }
+    cout << "¿Í»§¶ËÁ¬½Ó³É¹¦." << endl;
     return 0;
 }
-
-/*void Client_Socket::send_message(char *buffer)
-{
-    while (1)
-    {
-        cout << "è¯·è¾“å…¥è¦å‘é€çš„ä¿¡æ¯: ";
-        client_send_change.clear();
-        cin >> client_send_change;
-        for (int i = 0; i < client_send_change.length(); i++)
-        {
-            client_send[i] = client_send_change[i];
-        }
-        if (send(client_sock, client_send, client_send_change.length() + 1 + sizeof(char), 0) == SOCKET_ERROR)
-        {
-            cout << "å®¢æˆ·ç«¯å‘é€ä¿¡æ¯å¤±è´¥." << endl;
-            // return -1;
-        }
-        cout << "å®¢æˆ·ç«¯å‘é€ä¿¡æ¯æˆåŠŸ." << endl;
-        // return 0;
-    }
-}
-
-int Client_Socket::receive_message()
-{
-    while (1)
-    {
-        int err = recv(client_sock, client_recv, MAXBYTE, 0);
-        if (err == SOCKET_ERROR)
-        {
-            cout << "å®¢æˆ·ç«¯æŽ¥æ”¶ä¿¡æ¯å¤±è´¥." << endl;
-            return -1;
-        }
-        else
-        {
-            cout << "æ”¶åˆ°æœåŠ¡å™¨ä¿¡æ¯: ";
-        }
-        for (int i = 0; i < strlen(client_recv); i++)
-        {
-            cout << client_recv[i];
-        }
-        cout << endl;
-        err = 0;
-    }
-}*/
 
 void Client_Socket::closeSocket()
 {
@@ -81,7 +38,7 @@ void Client_Socket::closeSocket()
     closesocket(client_sock);
 }
 
-// TODOï¼šå¯Ÿè§‰åˆ°æœåŠ¡ç«¯å…³é—­ä»¥åŽï¼Œå®¢æˆ·ç«¯åº”è¯¥è‡ªåŠ¨é€€å‡º
+// TODO£º²ì¾õµ½·þÎñ¶Ë¹Ø±ÕÒÔºó£¬¿Í»§¶ËÓ¦¸Ã×Ô¶¯ÍË³ö
 
 void Client_Socket::handleSendAndReceive()
 {
@@ -89,12 +46,13 @@ void Client_Socket::handleSendAndReceive()
     {
         while (true)
         {
-            // å…ˆè¿›å…¥å‘é€çŠ¶æ€ç„¶åŽå†è¿›è¡Œç›‘å¬çŠ¶æ€
-            cout << "è¯·è¾“å…¥è¦å‘é€çš„ä¿¡æ¯: ";
+            // ÏÈ½øÈë·¢ËÍ×´Ì¬È»ºóÔÙ½øÐÐ¼àÌý×´Ì¬
+            cout << "ÇëÊäÈëÒª·¢ËÍµÄÐÅÏ¢: ";
             client_send_change.clear();
-            // client_sendæ•°ç»„ä¹Ÿæ¸…ç©º
+            // client_sendÊý×éÒ²Çå¿Õ
             memset(client_send, 0, sizeof(client_send));
             cin >> client_send_change;
+
             if (std::equal(client_send_change.begin(), client_send_change.end(), "exit"))
             {
                 break;
@@ -105,20 +63,30 @@ void Client_Socket::handleSendAndReceive()
             }
             if (send(client_sock, client_send, client_send_change.length() + 1 + sizeof(char), 0) == SOCKET_ERROR)
             {
-                cout << "å®¢æˆ·ç«¯å‘é€ä¿¡æ¯å¤±è´¥." << endl;
-                // return -1;
+                cout << "¿Í»§¶Ë·¢ËÍÐÅÏ¢Ê§°Ü." << endl;
+                cout << endl;
+                break;
             }
-            cout << "å®¢æˆ·ç«¯å‘é€ä¿¡æ¯æˆåŠŸ." << endl;
-            // return 0;
+            cout << "¿Í»§¶Ë·¢ËÍÐÅÏ¢³É¹¦." << endl;
+            cout << endl;
+
+            memset(client_recv, 0, sizeof(client_recv));
             int err = recv(client_sock, client_recv, MAXBYTE, 0);
             if (err == SOCKET_ERROR)
             {
-                cout << "å®¢æˆ·ç«¯æŽ¥æ”¶ä¿¡æ¯å¤±è´¥." << endl;
-                // return -1;
+                cout << "¿Í»§¶Ë½ÓÊÕÐÅÏ¢Ê§°Ü.¿ÉÄÜµÄÔ­ÒòÊÇ·þÎñ¶ËÒÑ¾­¹Ø±Õ" << endl;
+                cout << endl;
+                break;
+            }
+            else if (err == 0)
+            {
+                cout << "·þÎñÆ÷ÒÑ¹Ø±Õ." << endl;
+                cout << endl;
+                break;
             }
             else
             {
-                cout << "æ”¶åˆ°æœåŠ¡å™¨ä¿¡æ¯: ";
+                cout << "ÊÕµ½·þÎñÆ÷ÐÅÏ¢: ";
             }
             for (int i = 0; i < strlen(client_recv); i++)
             {
