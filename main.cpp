@@ -11,11 +11,8 @@ int main()
         cout << "发生了错误，系统退出" << endl;
         exit(-1);
     }
-    char buffer[1024];
-    thread send_thread(&Client_Socket::send_message, &client_socket, buffer);
-    send_thread.detach();
 
-    client_socket.receive_message();
+    client_socket.handleSendAndReceive();
     client_socket.closeSocket();
     return 0;
 }
